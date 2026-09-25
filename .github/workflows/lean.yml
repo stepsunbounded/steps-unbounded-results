@@ -65,7 +65,7 @@ jobs:
         run: |
           set -o pipefail
           lake env lean AxiomAudit.lean | tee /tmp/axiom-audit.txt
-          if ! grep -q 'sanity depends on axioms: \[\]' /tmp/axiom-audit.txt; then
+          if ! grep -q "'StepsUnboundedResults.sanity' does not depend on any axioms" /tmp/axiom-audit.txt; then
             echo "::error::unexpected axiom footprint for baseline theorem"
             cat /tmp/axiom-audit.txt
             exit 1
