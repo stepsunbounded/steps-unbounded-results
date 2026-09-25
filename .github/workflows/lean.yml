@@ -1,0 +1,72 @@
+name: Lean verification
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "lean/**"
+      - ".github/workflows/lean.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "lean/**"
+      - ".github/workflows/lean.yml"
+  workflow_dispatch:
+
+jobs:
+  lean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl -fsSL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "${HOME}/.elan/bin" >> "${GITHUB_PATH}"
+
+      - name: Fetch the mathlib cache
+        working-directory: lean
+        run: lake exe cache get
+
+      - name: Build the library
+        working-directory: lean
+        run: lake build StepsUnboundedResults
+
+      - name: Refuse proof holes or explicit axioms
+        working-directory: lean
+        run: |
+          python3 - <<'PY'
+          import glob, re, sys
+          bad = []
+          for f in sorted(glob.glob("StepsUnboundedResults/**/*.lean", recursive=True)):
+              src = open(f, encoding="utf-8").read()
+              out, i, depth = [], 0, 0
+              while i < len(src):
+                  if src.startswith("/-", i):
+                      depth += 1; i += 2; continue
+                  if depth and src.startswith("-/", i):
+                      depth -= 1; i += 2; continue
+                  if depth:
+                      i += 1; continue
+                  if src.startswith("--", i):
+                      j = src.find("\n", i); i = len(src) if j < 0 else j; continue
+                  out.append(src[i]); i += 1
+              code = "".join(out)
+              for m in re.finditer(r"\b(sorry|admit)\b|^\s*axiom\b", code, re.M):
+                  bad.append("%s:%d: %s" % (f, code[:m.start()].count("\n") + 1, m.group(0)))
+          if bad:
+              print("\n".join(bad))
+              sys.exit("proof hole or explicit axiom in formalized sources")
+          print("no sorry, admit or explicit axiom in the code")
+          PY
+
+      - name: Axiom audit
+        working-directory: lean
+        run: |
+          set -o pipefail
+          lake env lean AxiomAudit.lean | tee /tmp/axiom-audit.txt
+          if ! grep -q 'sanity depends on axioms: \[\]' /tmp/axiom-audit.txt; then
+            echo "::error::unexpected axiom footprint for baseline theorem"
+            cat /tmp/axiom-audit.txt
+            exit 1
+          fi
