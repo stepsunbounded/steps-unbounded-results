@@ -27,7 +27,7 @@ Suggested statuses:
 - **Conjecture** — no complete proof is claimed.
 - **Informally proven** — a complete argument is presented, but no machine-checked proof is claimed.
 - **Computationally verified** — the stated computational checks are reproducible from material in this repository.
-- **Formally verified** — a linked machine-checked formalization is included and its verification process is documented.
+- **Lean verified** — a linked Lean formalization is built by this repository's CI and included in the axiom audit.
 
 Use only the statuses that actually apply to a result, and state any limitations explicitly.
 
@@ -42,12 +42,36 @@ verify/
   R002/
 notes/
   ...                   # supporting research notes worth preserving
-
 templates/
   result.md             # starting point for a new result record
+lean/
+  lean-toolchain        # pinned Lean version
+  lakefile.lean         # pinned mathlib dependency and library definition
+  StepsUnboundedResults.lean
+  StepsUnboundedResults/
+    Foundation.lean
+    R001.lean           # one module per formalized result, when applicable
+  AxiomAudit.lean       # explicit audit of headline theorems
+.github/workflows/
+  lean.yml              # reproducible Lean CI
 ```
 
 Website pages may be shorter or more editorial. They should link to the corresponding permanent result record here.
+
+## Lean formalizations
+
+The Lean environment is pinned to Lean 4.32.0 and mathlib v4.32.0. To reproduce a build locally:
+
+```bash
+cd lean
+lake exe cache get
+lake build StepsUnboundedResults
+lake env lean AxiomAudit.lean
+```
+
+CI performs the same build whenever `lean/` or the Lean workflow changes. It also rejects formalized source files containing `sorry`, `admit`, or an explicit `axiom` declaration.
+
+When a result becomes formally verified, add a module such as `lean/StepsUnboundedResults/R001.lean`, import it from `StepsUnboundedResults.lean`, and add `#print axioms` entries for its headline theorems to `AxiomAudit.lean`. A result should only be labelled **Lean verified** while that CI run is green.
 
 ## Result record contract
 
