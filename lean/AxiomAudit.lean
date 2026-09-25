@@ -1,4 +1,6 @@
-import StepsUnboundedResults
+import StepsUnboundedResults.Foundation
+import StepsUnboundedResults.R002
+import StepsUnboundedResults.R003
 
 /-!
 # Axiom audit
