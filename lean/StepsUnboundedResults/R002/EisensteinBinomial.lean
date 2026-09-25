@@ -89,7 +89,7 @@ theorem two_mul_fermatQuotientTwo_eq_alternating
     have hdlt : d < r - 1 := Finset.mem_range.mp hd
     have hdpos : 0 < d + 1 := Nat.succ_pos d
     have hdkr : d + 1 < r := by omega
-    exact Nat.mul_div_cancel' (hr.dvd_choose_self hdpos hdkr)
+    exact Nat.mul_div_cancel' (hr.dvd_choose_self (Nat.ne_of_gt hdpos) hdkr)
   have hcop : Nat.Coprime 2 r :=
     (Nat.coprime_primes Nat.prime_two hr).2 (by omega)
   have hdivN : r ∣ 2 ^ (r - 1) - 1 :=
