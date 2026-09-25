@@ -6,6 +6,7 @@ import StepsUnboundedResults.HSC.Assembly
 import StepsUnboundedResults.HSC.A5Index
 import StepsUnboundedResults.HSC.A5Monoid
 import StepsUnboundedResults.HSC.R003
+import StepsUnboundedResults.HSC.R003Headline
 
 /-!
 # R003 — every direct power of `A₅` satisfies Herzog–Schönheim
