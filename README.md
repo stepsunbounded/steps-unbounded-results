@@ -50,7 +50,11 @@ lean/
   StepsUnboundedResults.lean
   StepsUnboundedResults/
     Foundation.lean
-    R001.lean           # one module per formalized result, when applicable
+    R002.lean           # one facade per formalized result, when applicable
+    R003.lean
+    R004.lean
+    R005.lean
+    R006.lean
   AxiomAudit.lean       # explicit audit of headline theorems
 .github/workflows/
   lean.yml              # reproducible Lean CI
@@ -71,7 +75,7 @@ lake env lean AxiomAudit.lean
 
 CI performs the same build whenever `lean/` or the Lean workflow changes. It also rejects formalized source files containing `sorry`, `admit`, or an explicit `axiom` declaration.
 
-When a result becomes formally verified, add a module such as `lean/StepsUnboundedResults/R001.lean`, import it from `StepsUnboundedResults.lean`, and add `#print axioms` entries for its headline theorems to `AxiomAudit.lean`. A result should only be labelled **Lean verified** while that CI run is green.
+When a result becomes formally verified, add or update its facade under `lean/StepsUnboundedResults/`, import it from `StepsUnboundedResults.lean`, and add `#print axioms` entries for the exact headline theorems to `AxiomAudit.lean`. A result should only be labelled **Lean verified** to the extent described by its canonical result record and while the relevant CI/audit is green.
 
 ## Result record contract
 

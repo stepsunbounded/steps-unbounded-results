@@ -1,13 +1,17 @@
 import StepsUnboundedResults.Foundation
 import StepsUnboundedResults.R002
 import StepsUnboundedResults.R003
+import StepsUnboundedResults.R004
+import StepsUnboundedResults.R005
+import StepsUnboundedResults.R006
 
 /-!
 # Steps Unbounded Results
 
-Umbrella module for the formally verified results in this repository.
+Umbrella module for the canonical Lean development in this repository.
 
-Only result modules whose current formal claims are part of the canonical record should be
-imported here. Conditional or partially formalized later results may still have Lean support
-modules, but their public status must remain explicit in the corresponding result record.
+Importing a result facade here does not by itself mean the entire website claim is formally verified.
+The corresponding result record states the exact boundary: R002–R004 have unconditional formal
+headlines, R005 has a Lean-verified mechanism with an external classification/data layer, and R006
+contains verified reductions while its general solvable hypothesis remains open.
 -/
