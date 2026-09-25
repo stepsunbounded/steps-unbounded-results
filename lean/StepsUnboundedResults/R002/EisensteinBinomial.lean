@@ -86,6 +86,7 @@ theorem two_mul_fermatQuotientTwo_eq_alternating
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro d hd
+    have hdlt : d < r - 1 := Finset.mem_range.mp hd
     exact Nat.mul_div_cancel' (hr.dvd_choose_self (by omega) (by omega))
   have hcop : Nat.Coprime 2 r :=
     (Nat.coprime_primes Nat.prime_two hr).2 (by omega)
@@ -99,6 +100,7 @@ theorem two_mul_fermatQuotientTwo_eq_alternating
   have hAq : A = 2 * fermatQuotientTwo r := by
     apply Nat.mul_left_cancel hr.pos
     rw [hrA, hI, hpow]
+    have hone : 1 ≤ 2 ^ (r - 1) := one_le_pow₀ (by omega)
     calc
       2 * 2 ^ (r - 1) - 2 = 2 * (2 ^ (r - 1) - 1) := by omega
       _ = 2 * (r * fermatQuotientTwo r) := by rw [hrq]
@@ -111,6 +113,7 @@ theorem two_mul_fermatQuotientTwo_eq_alternating
   push_cast
   apply Finset.sum_congr rfl
   intro d hd
+  have hdlt : d < r - 1 := Finset.mem_range.mp hd
   simpa using choose_div_prime_mod hr (k := d + 1) (by omega) (by omega)
 
 end StepsUnboundedResults.R002
