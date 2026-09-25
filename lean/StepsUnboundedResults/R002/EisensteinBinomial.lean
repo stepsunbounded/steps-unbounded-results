@@ -87,7 +87,9 @@ theorem two_mul_fermatQuotientTwo_eq_alternating
     apply Finset.sum_congr rfl
     intro d hd
     have hdlt : d < r - 1 := Finset.mem_range.mp hd
-    exact Nat.mul_div_cancel' (hr.dvd_choose_self (by omega) (by omega))
+    have hdpos : 0 < d + 1 := Nat.succ_pos d
+    have hdkr : d + 1 < r := by omega
+    exact Nat.mul_div_cancel' (hr.dvd_choose_self hdpos hdkr)
   have hcop : Nat.Coprime 2 r :=
     (Nat.coprime_primes Nat.prime_two hr).2 (by omega)
   have hdivN : r ∣ 2 ^ (r - 1) - 1 :=
@@ -114,6 +116,8 @@ theorem two_mul_fermatQuotientTwo_eq_alternating
   apply Finset.sum_congr rfl
   intro d hd
   have hdlt : d < r - 1 := Finset.mem_range.mp hd
-  simpa using choose_div_prime_mod hr (k := d + 1) (by omega) (by omega)
+  have hdpos : 0 < d + 1 := Nat.succ_pos d
+  have hdkr : d + 1 < r := by omega
+  simpa using choose_div_prime_mod hr (k := d + 1) hdpos hdkr
 
 end StepsUnboundedResults.R002
